@@ -46,7 +46,7 @@ router.put('/users/:id/role', updateUserRole);
 // Event approval
 router.get('/pending-events', verifyAdmin, getPendingEvents);
 router.put('/approve-event/:id', verifyAdmin, approveEvent);
-router.delete('/reject-event/:id', verifyAdmin, rejectEvent);
+router.put('/reject-event/:id', verifyAdmin, rejectEvent);
 router.get('/events/:id/attendees', verifyAdmin, getEventAttendees);
 
 

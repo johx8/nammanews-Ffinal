@@ -19,9 +19,9 @@ const eventSchema = new mongoose.Schema({
       registeredAt: { type: Date, default: Date.now }
     }
   ],
-  approved: { type: Boolean, default: false }, // <--- add this!
+  approved: { type: Boolean, default: null }, // <--- add this!
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // <--- add this!
-  rejectionMessage: { type: String }
+  rejectionMessage: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);

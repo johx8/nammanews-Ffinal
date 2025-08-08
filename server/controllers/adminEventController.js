@@ -28,18 +28,6 @@ exports.approveEvent = async (req, res) => {
   }
 };
 
-// Optionally reject (delete) event
-exports.rejectEvent = async (req, res) => {
-  try {
-    const eventId = req.params.id;
-    await Event.findByIdAndDelete(eventId);
-    res.status(200).json({ success: true, message: 'Event rejected and deleted' });
-  } catch (err) {
-    console.error('Error rejecting event:', err);
-    res.status(500).json({ success: false, message: 'Failed to reject event' });
-  }
-};
-
 
 // POST /api/events/:id/register
 exports.registerForEvent = async (req, res) => {
@@ -70,6 +58,52 @@ exports.registerForEvent = async (req, res) => {
   }
 };
 
+// controllers/adminController.js
+exports.rejectEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const { message } = req.body;
+
+    // Require a rejection message
+    if (!message || message.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Rejection message is required.'
+      });
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+      eventId,
+      {
+        approved: false,
+        rejectionMessage: message.trim(),
+        updatedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found.'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Event rejected successfully.',
+      event: updatedEvent
+    });
+
+  } catch (err) {
+    console.error('Error rejecting event:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error.',
+      error: err.message
+    });
+  }
+};
 
 
 exports.getEventAttendees = async (req, res) => {

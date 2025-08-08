@@ -207,35 +207,6 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-exports.rejectEvent = async (req, res) => {
-  try {
-    const eventId = req.params.id;
-    const { message } = req.body;
-
-    const rejectedEvent = await Event.findByIdAndUpdate(
-      eventId,
-      {
-        approved: false,
-        rejectionMessage: message || 'Rejected by admin',
-        updatedAt: new Date()
-      },
-      { new: true }
-    );
-
-    if (!rejectedEvent) {
-      return res.status(404).json({ success: false, message: 'Event not found' });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Event rejected with message',
-      event: rejectedEvent
-    });
-  } catch (err) {
-    console.error('Error rejecting event:', err);
-    res.status(500).json({ success: false, message: 'Server error', error: err.message });
-  }
-};
 
 const Video = require('../models/videoModel');
 

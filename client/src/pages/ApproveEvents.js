@@ -33,14 +33,16 @@ const ApproveEvents = () => {
 
   const handleReject = async (id) => {
     try {
+      console.log("Reject clicked for event:", id);
       const token = localStorage.getItem('token');
       const message = rejectionMessages[id] || '';
+      setPendingEvents(prev => prev.filter(event => event._id !== id));
 
-      await axios.delete(`http://localhost:5000/api/admin/reject-event/${id}`, {
+      await axios.put(`http://localhost:5000/api/admin/reject-event/${id}`, {message}, {
         headers: { Authorization: `Bearer ${token}` },
-        data: { message }
       });
-      fetchPending();
+      await fetchPending();
+      
     } catch (err) {
       console.error('Error rejecting event:', err);
     }
