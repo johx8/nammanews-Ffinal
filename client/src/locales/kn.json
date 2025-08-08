@@ -1,0 +1,31 @@
+{
+  "navbar": {
+    "home": "ಮನೆ",
+    "districts": "ಜಿಲ್ಲೆಗಳು",
+    "events": "ಇತ್ತೀಚಿನ ಘಟನೆಗಳು",
+    "stories": "ಕಥೆಗಳು",
+    "videos": "ವೀಡಿಯೊಗಳು",
+    "calendar": "ಕಾರ್ಯಕ್ರಮ ಕ್ಯಾಲೆಂಡರ್",
+    "categories": "ವರ್ಗಗಳು",
+    "login": "ಲಾಗಿನ್",
+    "logout": "ಲಾಗ್ ಔಟ್",
+    "greeting": "ನಮಸ್ಕಾರ, {{name}}"
+  },
+  "admin": {
+    "dashboard": "ಡ್ಯಾಶ್ ಬೋರ್ಡ್",
+    "addEvents": "ಕಾರ್ಯಕ್ರಮ ಸೇರಿಸಿ",
+    "approveEvents": "ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಅನುಮೋದಿಸಿ",
+    "manageEvents": "ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    "manageUsers": "ಬಳಕೆದಾರರನ್ನು ನಿರ್ವಹಿಸಿ",
+    "uploadVideo": "ವೀಡಿಯೊ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+    "addStory": "ಕಥೆಯನ್ನು ಸೇರಿಸಿ",
+    "addAdvertisement": "ಜಾಹೀರಾತು ಸೇರಿಸಿ",
+    "adminPanel": "ನಿರ್ವಾಹಕ ಫಲಕ"
+  },
+  "user": {
+    "dashboard": "ಬಳಕೆದಾರ ಫಲಕ",
+    "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+    "submitEvents": "ಕಾರ್ಯಕ್ರಮವನ್ನು ಸಲ್ಲಿಸಿ",
+    "myEvents": "ನನ್ನ ಕಾರ್ಯಕ್ರಮಗಳು"
+  }
+}

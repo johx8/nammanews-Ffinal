@@ -1,0 +1,26 @@
+nav {
+  /* background-color:white; */
+}
+
+.projectTitle {
+  color: aliceblue;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.opts {
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding-right: 5px;
+}
+
+.opts:hover {
+  color: orange;
+}
+
+body{
+  background-color:beige
+}
+
+
+
+

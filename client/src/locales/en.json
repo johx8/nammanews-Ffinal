@@ -1,0 +1,31 @@
+{
+  "navbar": {
+    "home": "Home",
+    "districts": "Districts",
+    "events": "Latest Events",
+    "stories": "Stories",
+    "videos": "Videos",
+    "calendar": "Event Calendar",
+    "categories": "Categories",
+    "login": "Login",
+    "logout": "Logout",
+    "greeting": "Hi, {{name}}"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "addEvents": "Add Events",
+    "approveEvents": "Approve Events",
+    "manageEvents": "Manage Events",
+    "manageUsers": "Manage Users",
+    "uploadVideo": "Upload Video",
+    "addStory": "Add Story",
+    "addAdvertisement": "Add Advertisement",
+    "adminPanel": "Admin Panel"
+  },
+  "user": {
+    "dashboard": "User Dashboard",
+    "editProfile": "Edit Profile",
+    "submitEvents": "Submit Events",
+    "myEvents": "My Events"
+  }
+}

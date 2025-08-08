@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^4.1.8"
+  },
+  "dependencies": {
+    "i18next": "^25.3.2",
+    "lucide-react": "^0.515.0",
+    "multer": "^2.0.1",
+    "react-i18next": "^15.6.1"
+  }
+}
