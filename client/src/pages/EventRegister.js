@@ -25,7 +25,12 @@ const EventRegister = () => {
     setSubmitting(true);
     setMessage(null);
     try {
-      const res = await axios.post(`http://localhost:5000/api/events/${id}/register`, { name, email });
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`http://localhost:5000/api/events/${id}/register`, { name, email },
+        {
+          headers: {Authorization: `Bearer ${token}`}
+        }
+      );
       if (res.data.success || res.data.message === 'Registered successfully') {
         setMessage('Registration successful!');
         setTimeout(() => navigate(`/event/${id}`), 1500); // Redirect to event details after 1.5s

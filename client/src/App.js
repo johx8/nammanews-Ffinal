@@ -24,6 +24,7 @@ import UserLayout from './components/UserLayout';
 // import EditProfile from './pages/user/EditProfile';
 import UserAddEvent from './pages/UserAddEvent';
 import MyEvents from './pages/MyEvents';
+import MyRegisteredEvents from './pages/MyRegisteredEvents.js';
 
 
 import UploadVideoForm from "./pages/UploadVideoForm.js";
@@ -34,6 +35,7 @@ import UploadStoryForm from "./pages/UploadStoryForm.js";
 import ApproveEvents from './pages/ApproveEvents.js';
 
 import UploadAdvertisementForm from './pages/UploadAdvertisementForm.js';
+import AdvertisementsAdmin from "./pages/ManageAdvertisements.js";
 
 
 
@@ -61,6 +63,7 @@ function App() {
           <Route path="upload-video" element={<UploadVideoForm />} />
           <Route path="add-story" element={<UploadStoryForm />} />
           <Route path ="add-advertisement" element={<UploadAdvertisementForm />} />
+          <Route path="manage-advertisements" element={<AdvertisementsAdmin />} />
         </Route>
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/event/:id/register" element={<EventRegister />} />
@@ -70,6 +73,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="add-event" element={<UserAddEvent />} />
             <Route path="my-events" element={<MyEvents />} />
+            <Route path="my-registrations" element={<MyRegisteredEvents />} />
           </Route>
       </Routes>
     </Router>

@@ -37,6 +37,7 @@ const AdminSidebar = () => {
           <NavLink to="/admin/upload-video" className={navItemClass}>{t("admin.uploadVideo")}</NavLink>
           <NavLink to="/admin/add-story" className={navItemClass}>{t("admin.addStory")}</NavLink>
           <NavLink to="/admin/add-advertisement" className={navItemClass}>{t("admin.addAdvertisement")}</NavLink>
+          <NavLink to="/admin/manage-advertisements" className={navItemClass}>{t("admin.manageAdvertisements")}</NavLink>
         </nav>
       </div>
 
@@ -65,6 +66,7 @@ const AdminSidebar = () => {
             <NavLink to="/admin/upload-video" className={navItemClass}>{t("admin.uploadVideo")}</NavLink>
             <NavLink to="/admin/add-story" className={navItemClass}>{t("admin.addStory")}</NavLink>
             <NavLink to="/admin/add-advertisement" className={navItemClass}>{t("admin.addAdvertisement")}</NavLink>
+            <NavLink to="/admin/manage-advertisements" className={navItemClass}>{t("admin.manageAdvertisements")}</NavLink>
           </nav>
         </div>
       )}

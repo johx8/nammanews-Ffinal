@@ -20,12 +20,14 @@
     "uploadVideo": "ವೀಡಿಯೊ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
     "addStory": "ಕಥೆಯನ್ನು ಸೇರಿಸಿ",
     "addAdvertisement": "ಜಾಹೀರಾತು ಸೇರಿಸಿ",
-    "adminPanel": "ನಿರ್ವಾಹಕ ಫಲಕ"
+    "adminPanel": "ನಿರ್ವಾಹಕ ಫಲಕ",
+    "manageAdvertisements": "ಜಾಹೀರಾತುಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
   },
   "user": {
     "dashboard": "ಬಳಕೆದಾರ ಫಲಕ",
     "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
     "submitEvents": "ಕಾರ್ಯಕ್ರಮವನ್ನು ಸಲ್ಲಿಸಿ",
-    "myEvents": "ನನ್ನ ಕಾರ್ಯಕ್ರಮಗಳು"
+    "myEvents": "ನನ್ನ ಕಾರ್ಯಕ್ರಮಗಳು",
+    "myRegistrations": "ನನ್ನ ನೋಂದಣಿಗಳು"
   }
 }

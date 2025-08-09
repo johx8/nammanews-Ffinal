@@ -5,27 +5,52 @@ const User = require('../models/user');
 const { registerForEvent } = require('../controllers/adminEventController');
 // const {getMyEventAttendees} = require('../controllers/userEventController')
 // const authMiddleware = require('../middleware/authMiddleware');
+const mongoose = require('mongoose');
+const { verifyUser } = require('../middleware/authMiddleware');
 
 
-router.post('/:eventId/register', async (req, res) => {
+router.post('/:eventId/register', verifyUser, async (req, res) => {
   const { eventId } = req.params;
   const { name, email } = req.body;
+  const userId = req.user.userId; // from auth middleware
 
   try {
-    const event = await Event.findById(eventId);
-    if (!event) return res.status(404).json({ message: 'Event not found' });
+    // Validate userId presence and format
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid or missing user ID' });
+    }
 
-    // Check if slots are limited and already full
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Check if already registered
+    const alreadyRegistered = event.registeredUsers.some(
+      u => String(u.userId) === String(userId)
+    );
+    if (alreadyRegistered) {
+      return res.status(400).json({ message: 'You are already registered for this event' });
+    }
+
+    // Check if slots are full
     if (event.maxAttendees && event.registeredUsers.length >= event.maxAttendees) {
       return res.status(400).json({ message: 'Registration full' });
     }
 
-    event.registeredUsers.push({ name, email });
+    // Push valid registration
+    event.registeredUsers.push({
+      userId: userId, // Use ObjectId from req.user
+      name: name || req.user.name,
+      email: email || req.user.email,
+      registeredAt: new Date()
+    });
     await event.save();
 
     res.status(200).json({ message: 'Registered successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Registration failed', error });
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Registration failed', error: error.message });
   }
 });
 
@@ -82,7 +107,7 @@ router.get('/events/:id', async (req, res) => {
 });
 
 
-router.post('/:id/register', registerForEvent);
+// router.post('/:id/register', registerForEvent);
 // routes/userEventRoutes.js
 // router.get('/my-events/:id/attendees', authMiddleware, getMyEventAttendees);
 

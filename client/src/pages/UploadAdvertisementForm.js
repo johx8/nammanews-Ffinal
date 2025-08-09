@@ -7,28 +7,41 @@ const UploadAdvertisementForm = () => {
     description: '',
     redirectUrl: '',
     contact: '',
+    district: '',
+    category: '',
     image: null,
   });
 
+
+  const districts = [
+    "Bagalkote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru",
+    "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya",
+    "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgiri"
+  ];
+
+  const categories = [
+    "Business", "Dance", "Education", "Health", "Food", "Arts", "Workshop", "Finance"
+  ];
+
   const handleChange = (e) => {
-    if (e.target.name === 'image') {
-      setFormData({ ...formData, image: e.target.files[0] });
-    } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
+  const { name, value, files } = e.target;
 
-    const { name, value } = e.target;
-
-  // Allow only digits and max length 10
-  if (name === 'contact') {
-    const digitsOnly = value.replace(/\D/g, ''); // Remove non-digits
-    if (digitsOnly.length <= 10) {
-      setFormData((prev) => ({ ...prev, [name]: digitsOnly }));
-    }
-  } else {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  if (name === 'image') {
+    setFormData((prev) => ({ ...prev, image: files[0] }));
+    return; // stop here so you don't overwrite it
   }
-  };
+
+  if (name === 'contact') {
+    const digitsOnly = value.replace(/\D/g, '');
+    if (digitsOnly.length <= 10) {
+      setFormData((prev) => ({ ...prev, contact: digitsOnly }));
+    }
+    return;
+  }
+
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,6 +66,8 @@ const UploadAdvertisementForm = () => {
         description: '',
         redirectUrl: '',
         contact: '',
+        district: '',
+        category: '',
         image: null,
       });
     } catch (error) {
@@ -79,6 +94,38 @@ const UploadAdvertisementForm = () => {
   maxLength={10}
 />
         <input type="file" name="image" accept="image/*" onChange={handleChange} className="input" required />
+        <div className="md:flex gap-4">
+            <div className="flex-1">
+              <label className="block font-medium mb-1 text-gray-700">District</label>
+              <select
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                className="input w-full border px-3 py-2 rounded focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                required
+              >
+                <option value="">Select District</option>
+                {districts.map((d, i) => (
+                  <option key={i} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block font-medium mb-1 text-gray-700">Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="input w-full border px-3 py-2 rounded focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                required
+              >
+                <option value="">Select Category</option>
+                {categories.map((c, i) => (
+                  <option key={i} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"

@@ -141,3 +141,24 @@ exports.getEventAttendeesForUser = async (req, res) => {
     });
   }
 };
+
+// controllers/eventController.js
+exports.getEventsUserRegisteredFor = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user._id // from your auth middleware
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User id missing' });
+    }
+
+    // Find all events where this userId exists in registeredUsers
+    const events = await Event.find({ 
+      'registeredUsers.userId': userId 
+    }).select('-__v');
+    console.log('Registered events:', events);
+    return res.status(200).json({ success: true, events });
+  } catch (err) {
+    console.error('Error fetching registered events:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+

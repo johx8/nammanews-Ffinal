@@ -20,12 +20,14 @@
     "uploadVideo": "Upload Video",
     "addStory": "Add Story",
     "addAdvertisement": "Add Advertisement",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "manageAdvertisements": "Manage Advertisements"
   },
   "user": {
     "dashboard": "User Dashboard",
     "editProfile": "Edit Profile",
     "submitEvents": "Submit Events",
-    "myEvents": "My Events"
+    "myEvents": "My Events",
+    "myRegistrations": "My Registrations"
   }
 }

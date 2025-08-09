@@ -14,6 +14,7 @@ const eventSchema = new mongoose.Schema({
   maxAttendees: { type: Number }, // If not set, treated as free-for-all
   registeredUsers: [
     {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
       name: String,
       email: String,
       registeredAt: { type: Date, default: Date.now }

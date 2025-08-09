@@ -29,6 +29,7 @@ const UserSidebarDash = () => {
           <NavLink to="/user/profile" className={navItemClass}>{t("user.editProfile")}</NavLink>
           <NavLink to="/user/add-event" className={navItemClass}>{t("user.submitEvents")}</NavLink>
           <NavLink to="/user/my-events" className={navItemClass}>{t("user.myEvents")}</NavLink>
+          <NavLink to="/user/my-registrations" className={navItemClass}>{t("user.myRegistrations")}</NavLink>
         </nav>
       </div>
 
@@ -50,6 +51,7 @@ const UserSidebarDash = () => {
             <NavLink to="/user/profile" className={navItemClass}>{t("user.editProfile")}</NavLink>
             <NavLink to="/user/add-event" className={navItemClass}>{t("user.submitEvents")}</NavLink>
             <NavLink to="/user/my-events" className={navItemClass}>{t("user.myEvents")}</NavLink>
+            <NavLink to="/user/my-registrations" className={navItemClass}>{t("user.myRegistrations")}</NavLink>
           </nav>
         </div>
       )}
