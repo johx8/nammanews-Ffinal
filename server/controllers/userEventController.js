@@ -1,5 +1,6 @@
 const Event = require('../models/eventModel');
 const mongoose = require('mongoose');
+const {Parser} = require('json2csv'); // for CSV export
 
 // Submit a new event (user submission)
 exports.submitUserEvent = async (req, res) => {
@@ -76,11 +77,67 @@ exports.getUserEvents = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: "No user id" });
     }
-    // Only fetch events created by the specific user
-    const events = await Event.find({ createdBy: userId }).sort({ date: -1 });
+
+    const events = await Event.find({ createdBy: userId })
+      .sort({ date: -1 })
+      .select('-__v');
+
     return res.status(200).json({ success: true, events });
   } catch (err) {
     console.error('Error fetching user events:', err);
-    return res.status(500).json({ success: false, message: 'Failed to fetch user events' });
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user events',
+      error: err.message
+    });
+  }
+};
+
+exports.getEventAttendeesForUser = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user._id;
+    const { id } = req.params;
+
+    // Ensure event belongs to this user and is approved
+    const event = await Event.findOne({
+      _id: id,
+      createdBy: userId,
+      approved: true
+    }).select('title registeredUsers');
+
+    if (!event) {
+      return res.status(403).json({
+        success: false,
+        message: 'Event not found or not approved'
+      });
+    }
+
+    const attendees = event.registeredUsers || [];
+
+    // CSV export
+    if (req.query.format === 'csv') {
+      const { Parser } = require('json2csv');
+      const fields = ['name', 'email', 'registeredAt'];
+      const json2csv = new Parser({ fields });
+      const csv = json2csv.parse(attendees);
+
+      res.header('Content-Type', 'text/csv');
+      res.attachment(`${event.title.replace(/\s+/g, '_')}-attendees.csv`);
+      return res.send(csv);
+    }
+
+    // JSON export
+    return res.status(200).json({
+      success: true,
+      title: event.title,
+      attendees
+    });
+  } catch (err) {
+    console.error('Error fetching attendees:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: err.message
+    });
   }
 };

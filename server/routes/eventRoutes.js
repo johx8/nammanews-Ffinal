@@ -3,7 +3,8 @@ const router = express.Router();
 const Event = require('../models/eventModel');
 const User = require('../models/user');
 const { registerForEvent } = require('../controllers/adminEventController');
-
+// const {getMyEventAttendees} = require('../controllers/userEventController')
+// const authMiddleware = require('../middleware/authMiddleware');
 
 
 router.post('/:eventId/register', async (req, res) => {
@@ -82,5 +83,8 @@ router.get('/events/:id', async (req, res) => {
 
 
 router.post('/:id/register', registerForEvent);
+// routes/userEventRoutes.js
+// router.get('/my-events/:id/attendees', authMiddleware, getMyEventAttendees);
+
 
 module.exports = router;
