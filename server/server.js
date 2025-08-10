@@ -27,7 +27,7 @@ app.use(cors({
 app.use(express.json());
 connectDB();
 
-app.use('/api', publicRoutes);
+
 
 // Auth and core routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -37,6 +37,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/stories', require('./routes/storyRoutes'));
 app.use('/api/advertisements', advertisementRoutes);
+app.use('/api/events', publicRoutes);
 
 
 // Static file serving

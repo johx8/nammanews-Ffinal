@@ -8,6 +8,8 @@ import Profile from "./pages/profile.js";
 import Stories from "./pages/Stories.js";
 import StoryDetail from "./pages/StoryDetail.js";
 import EventRegister from './pages/EventRegister';
+import DistrictPage from "./pages/districts.js";
+import Categories from "./pages/categories.js";
 
 // import UserRoutes from "./components/UserRoutes.js";
 import AdminDashboard from "./pages/AdminDashboard.js";
@@ -46,14 +48,15 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<div><Home/></div>} />
-        <Route path="/districts" element={<div>Districts</div>} />
+        <Route path="/districts" element={<div><DistrictPage/></div>} />
         <Route path="/events" element={<div><LatestEvents/></div>} />
         <Route path="/stories" element={<div><Stories/></div>} />
         <Route path="/videos" element={<div><VideoGallery/></div>} />
         <Route path="/calendar" element={<div><CalendarPage /></div>} />
-        <Route path="/categories" element={<div>Categories</div>} />
+        <Route path="/categories" element={<div><Categories/></div>} />
         <Route path="/signup" element={<div><SignUp /></div>} />
         <Route path="/login" element={<div><Login /></div>} />
+        
         {/* // <Route path="/profile" element={<UserRoutes><Profile /></UserRoutes>}/> */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminStats />} />

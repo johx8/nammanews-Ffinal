@@ -4,7 +4,10 @@ const Story = require('../models/storyModel');
 
 router.get('/', async (req, res) => {
   try {
-    const stories = await Story.find().sort({ createdAt: -1 });
+    const query = {};
+    if (req.query.district) query.district = req.query.district;
+    if (req.query.category) query.category = req.query.category;
+    const stories = await Story.find(query).sort({ createdAt: -1 });
     res.status(200).json(stories);
   } catch (error) {
     console.error('Failed to fetch stories:', error);

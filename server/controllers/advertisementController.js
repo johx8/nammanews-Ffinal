@@ -31,7 +31,10 @@ exports.createAdvertisement = async (req, res) => {
 
 exports.getAllAdvertisements = async (req, res) => {
   try {
-    const ads = await Advertisement.find().sort({ postedAt: -1 });
+    const query = {};
+    if (req.query.district) query.district = req.query.district;
+    if (req.query.category) query.category = req.query.category;
+    const ads = await Advertisement.find(query).sort({ postedAt: -1 });
     res.status(200).json({ ads });
   } catch (error) {
     console.error('Error fetching ads:', error);

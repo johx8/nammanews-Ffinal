@@ -3,6 +3,6 @@ const router = express.Router();
 const eventController = require('../controllers/EventController');
 
 // ✅ Only fetch approved events
-router.get('/events', eventController.getApprovedEvents);
+router.get('/', eventController.getApprovedEvents);
 
 module.exports = router;
