@@ -1,57 +1,132 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { Box, Typography, Paper, CircularProgress } from '@mui/material';
 
-const CalendarPage = () => {
+export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchEventsByDate = async (date) => {
-    
     try {
-      const formattedDate = date.toISOString().split('T')[0]; // e.g. "2025-06-27"
-      console.log('Fetching events for:', formattedDate);
-      const response = await axios.get(`http://localhost:5000/api/events/date/${formattedDate}`);
+      setLoading(true);
+      const formattedDate = date.toLocaleDateString('en-CA');
+      const response = await axios.get(
+        `http://localhost:5000/api/events/date/${formattedDate}`
+      );
       setEvents(response.data.events || []);
-      
     } catch (err) {
-      console.error("Failed to fetch events:", err);
+      setEvents([]);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchEventsByDate(selectedDate);
+    // eslint-disable-next-line
   }, [selectedDate]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
   return (
-    <div className="p-6 max-w-3xl mx-auto mt-8 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-4 text-orange-600">📅 Event Calendar</h2>
-      
-      <Calendar onChange={handleDateChange} value={selectedDate} className="mb-6" />
+    <Box
+      className="max-w-4xl mx-auto mt-8"
+      sx={{
+        bgcolor: 'white',
+        boxShadow: 4,
+        borderRadius: 3,
+        p: { xs: 2, md: 4 },
+        mb: 6,
+      }}
+    >
+      <Typography variant="h4" fontWeight={900} mb={2} color="orange">
+        📅 Event Calendar
+      </Typography>
 
-      <h3 className="text-lg font-semibold mb-2 text-gray-700">
+      {/* MUI Date Calendar */}
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: { xs: "center", md: "start" },
+          mb: 5
+        }}>
+          <DateCalendar
+            value={selectedDate}
+            onChange={setSelectedDate}
+            sx={{
+              bgcolor: '#fff',
+              borderRadius: 2,
+              boxShadow: 2,
+              "--mui-palette-primary-main": "#fb923c", // orange accent
+              "& .MuiPickersDay-root.Mui-selected": {
+                bgcolor: "#fb923c",
+                color: "#fff",
+              },
+              "& .MuiPickersDay-root:hover": {
+                bgcolor: "#fde68a",
+              },
+              "& .MuiPickersDay-root.Mui-selected:hover": {
+                bgcolor: "#f97316",
+              },
+              "& .MuiTypography-root": {
+                fontWeight: 700,
+                color: "#fb923c"
+              },
+            }}
+            views={['day', 'month', 'year']}
+            showDaysOutsideCurrentMonth
+            disablePast={false}
+          />
+        </Box>
+      </LocalizationProvider>
+
+      {/* Selected date heading */}
+      <Typography variant="h6" fontWeight={700} mb={2} color="gray.700">
         Events on {selectedDate.toDateString()}:
-      </h3>
+      </Typography>
 
-      {events.length > 0 ? (
-        <ul className="list-disc list-inside text-sm text-gray-800">
-          {events.map((event, index) => (
-            <li key={index}>
-              <strong>{event.title}</strong> – {event.time} in {event.district}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-sm text-gray-500">No events on this day.</p>
+      {/* Loading indicator */}
+      {loading && (
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center", mb: 2 }}>
+          <CircularProgress size={20} color="warning" />
+          <Typography color="gray" fontSize={14}>Loading events...</Typography>
+        </Box>
       )}
-    </div>
-  );
-};
 
-export default CalendarPage;
+      {/* Event List */}
+      {!loading && events.length > 0 ? (
+        <Box as="ul" sx={{ p: 0, m: 0 }}>
+          {events.map((event, idx) => (
+            <Paper
+              component="li"
+              elevation={2}
+              key={event._id || idx}
+              sx={{
+                p: 2,
+                mb: 2,
+                borderRadius: "12px",
+                bgcolor: "#fff7ed",
+                borderLeft: "4px solid #fb923c"
+              }}
+            >
+              <Typography fontWeight={800} color="orange" fontSize={18}>
+                {event.title}
+              </Typography>
+              <Box sx={{ fontSize: 14, color: "text.secondary", mt: 0.5 }}>
+                🕒 {event.time} &nbsp; | &nbsp; 📍 {event.district} &nbsp; | &nbsp; 🎯 {event.category}
+              </Box>
+            </Paper>
+          ))}
+        </Box>
+      ) : (
+        !loading && (
+          <Typography color="gray" fontSize={15} mt={2}>
+            No events on this day.
+          </Typography>
+        )
+      )}
+    </Box>
+  );
+}

@@ -56,33 +56,18 @@ router.post('/:eventId/register', verifyUser, async (req, res) => {
 
 
 
-
 router.get('/date/:date', async (req, res) => {
   try {
     const dateParam = req.params.date; // e.g., "2025-07-10"
-    const [year, month, day] = dateParam.split('-').map(Number);
 
-    // Create JS Date object at midnight IST (not UTC!)
-    // Because new Date('YYYY-MM-DD') is always UTC
-    const midnightIST = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-    // Remove UTC offset to get local IST
-    midnightIST.setHours(midnightIST.getHours() + 5, midnightIST.getMinutes() + 30);
+    const startOfDay = new Date(dateParam);
+    startOfDay.setHours(0, 0, 0, 0);
 
-    // Start and end of day in IST
-    const startIST = new Date(midnightIST);
-    const endIST = new Date(midnightIST);
-    endIST.setHours(23,59,59,999);
-
-    // Convert IST to UTC for MongoDB
-    const istOffsetMs = 5.5 * 60 * 60 * 1000;
-    const startUTC = new Date(startIST.getTime() - istOffsetMs);
-    const endUTC = new Date(endIST.getTime() - istOffsetMs);
+    const endOfDay = new Date(dateParam);
+    endOfDay.setHours(23, 59, 59, 999);
 
     const events = await Event.find({
-      date: {
-        $gte: startUTC,
-        $lte: endUTC,
-      },
+      date: { $gte: startOfDay, $lte: endOfDay },
       approved: true,
     });
 
@@ -92,7 +77,6 @@ router.get('/date/:date', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 router.get('/events/:id', async (req, res) => {
   try {

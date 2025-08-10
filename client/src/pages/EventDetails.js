@@ -83,6 +83,27 @@ const EventDetail = () => {
             </div>
           </div>
 
+          
+
+          {/* Address */}
+          <div className="mb-3">
+            <div className="font-semibold text-gray-700 mb-1">📫 Address</div>
+            <div className="text-gray-600">{address}</div>
+          </div>
+
+          {event.organizedBy && (
+    <div className="mb-2">
+      <div className="font-semibold text-gray-700 mb-1">🧑‍💼 Organized By</div>
+      <div className="text-gray-600">{event.organizedBy}</div>
+    </div>
+  )}
+
+          {/* Contact */}
+          <div className="mb-5">
+            <div className="font-semibold text-gray-700 mb-1">📞 Contact</div>
+            <div className="text-gray-600">{contact}</div>
+          </div>
+
           {/* Attendance Info */}
           <div className="mb-5 text-sm text-gray-700">
             {isFreeForAll
@@ -101,18 +122,6 @@ const EventDetail = () => {
               Register Now
             </button>
           )}
-
-          {/* Address */}
-          <div className="mb-3">
-            <div className="font-semibold text-gray-700 mb-1">📫 Address</div>
-            <div className="text-gray-600">{address}</div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <div className="font-semibold text-gray-700 mb-1">📞 Contact</div>
-            <div className="text-gray-600">{contact}</div>
-          </div>
 
           
         </div>
