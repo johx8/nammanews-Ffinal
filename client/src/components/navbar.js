@@ -27,30 +27,55 @@ export default function Navbar() {
     i18n.changeLanguage(i18n.language === "en" ? "kn" : "en");
   };
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen((o) => !o);
 
   const navLinkClass = ({ isActive }) =>
     `px-3 py-2 rounded-md font-semibold transition-colors duration-200 ${
-      isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"
+      isActive
+        ? "text-orange-600 border-b-2 border-orange-600"
+        : "text-gray-700 hover:text-orange-600"
     }`;
 
   return (
     <nav className="bg-white shadow-md border-b relative flex items-center justify-between px-4 py-2">
-      {/* Logo */}
-      <NavLink to="/" className="flex items-center">
-        <img src={logo} alt="NammaEvents Logo" className="w-20 transition-transform hover:scale-105" />
-      </NavLink>
+      {/* MOBILE: Hamburger icon (left), then logo */}
+      <div className="flex items-center">
+        <button
+          onClick={toggleMenu}
+          className="md:hidden mr-2 focus:outline-none"
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+        <NavLink to="/" className="flex items-center">
+          <img
+            src={logo}
+            alt="NammaEvents Logo"
+            className="w-20 transition-transform hover:scale-105"
+          />
+        </NavLink>
+      </div>
 
-      {/* Desktop Nav */}
+      {/* DESKTOP Navigation */}
       <div className="hidden md:flex space-x-4 items-center text-sm md:text-base">
-        <NavLink to="/" className={navLinkClass}>{t("navbar.home")}</NavLink>
-        <NavLink to="/districts" className={navLinkClass}>{t("navbar.districts")}</NavLink>
-        <NavLink to="/events" className={navLinkClass}>{t("navbar.events")}</NavLink>
-        <NavLink to="/stories" className={navLinkClass}>{t("navbar.stories")}</NavLink>
-        <NavLink to="/videos" className={navLinkClass}>{t("navbar.videos")}</NavLink>
-        <NavLink to="/calendar" className={navLinkClass}>{t("navbar.calendar")}</NavLink>
-        <NavLink to="/categories" className={navLinkClass}>{t("navbar.categories")}</NavLink>
-
+        <NavLink to="/" className={navLinkClass}>
+          {t("navbar.home")}
+        </NavLink>
+        <NavLink to="/districts" className={navLinkClass}>
+          {t("navbar.districts")}
+        </NavLink>
+        <NavLink to="/categories" className={navLinkClass}>
+          {t("navbar.categories")}
+        </NavLink>
+        <NavLink to="/stories" className={navLinkClass}>
+          {t("navbar.stories")}
+        </NavLink>
+        <NavLink to="/videos" className={navLinkClass}>
+          {t("navbar.videos")}
+        </NavLink>
+        <NavLink to="/calendar" className={navLinkClass}>
+          {t("navbar.calendar")}
+        </NavLink>
         {/* Lang Button */}
         <button
           onClick={toggleLang}
@@ -58,7 +83,6 @@ export default function Navbar() {
         >
           {i18n.language === "en" ? "ಕನ್ನಡ" : "English"}
         </button>
-
         {userName ? (
           <>
             <NavLink to={role === "admin" ? "/admin/dashboard" : "/user/profile"} className={navLinkClass}>
@@ -75,34 +99,45 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Mobile Toggle */}
-      <button onClick={toggleMenu} className="md:hidden">
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      {/* Adds a right-side spacer in mobile for symmetry (optional) */}
+      <div className="md:hidden w-8" />
 
-      {/* Mobile Menu */}
+      {/* MOBILE: Expand/Compress Navbar */}
       <div
-        className={`md:hidden fixed top-16 left-0 w-full bg-white shadow-lg transform transition-transform duration-300 ${
+        className={`md:hidden fixed top-16 left-0 w-full bg-white shadow-lg transform transition-transform duration-300 z-50 ${
           isOpen ? "translate-y-0" : "-translate-y-full"
         }`}
+        style={{ willChange: "transform" }}
       >
         <div className="flex flex-col space-y-3 p-4">
-          <NavLink to="/" onClick={toggleMenu} className={navLinkClass}>{t("navbar.home")}</NavLink>
-          <NavLink to="/districts" onClick={toggleMenu} className={navLinkClass}>{t("navbar.districts")}</NavLink>
-          <NavLink to="/events" onClick={toggleMenu} className={navLinkClass}>{t("navbar.events")}</NavLink>
-          <NavLink to="/stories" onClick={toggleMenu} className={navLinkClass}>{t("navbar.stories")}</NavLink>
-          <NavLink to="/videos" onClick={toggleMenu} className={navLinkClass}>{t("navbar.videos")}</NavLink>
-          <NavLink to="/calendar" onClick={toggleMenu} className={navLinkClass}>{t("navbar.calendar")}</NavLink>
-          <NavLink to="/categories" onClick={toggleMenu} className={navLinkClass}>{t("navbar.categories")}</NavLink>
-
+          <NavLink to="/" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.home")}
+          </NavLink>
+          <NavLink to="/districts" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.districts")}
+          </NavLink>
+          <NavLink to="/categories" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.categories")}
+          </NavLink>
+          <NavLink to="/stories" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.stories")}
+          </NavLink>
+          <NavLink to="/videos" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.videos")}
+          </NavLink>
+          <NavLink to="/calendar" onClick={toggleMenu} className={navLinkClass}>
+            {t("navbar.calendar")}
+          </NavLink>
           {/* Lang Button */}
           <button
-            onClick={() => { toggleMenu(); toggleLang(); }}
+            onClick={() => {
+              toggleMenu();
+              toggleLang();
+            }}
             className="px-4 py-1 rounded-full border border-orange-500 text-orange-600 font-bold hover:bg-orange-500 hover:text-white transition"
           >
             {i18n.language === "en" ? "ಕನ್ನಡ" : "English"}
           </button>
-
           {userName ? (
             <>
               <NavLink to={role === "admin" ? "/admin/dashboard" : "/user/profile"} onClick={toggleMenu} className={navLinkClass}>

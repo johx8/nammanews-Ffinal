@@ -116,7 +116,7 @@ exports.getStoryCount = async (req, res) => {
 
 exports.getAllEvents = async (req, res) => {
   try{
-    const events = await Event.find().sort({ date: -1 });
+    const events = await Event.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, events });
   }catch (error) {
     console.error('Error fetching events:', error);

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const districts = [
+  "Bagalkote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru",
+  "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya",
+  "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgiri"
+];
+
+const categories = [
+  "Business", "Dance", "Education", "Health", "Food", "Arts", "Workshop", "Finance"
+];
+
 const UploadAdvertisementForm = () => {
   const [formData, setFormData] = useState({
     title: '',
@@ -11,40 +21,32 @@ const UploadAdvertisementForm = () => {
     category: '',
     image: null,
   });
-
-
-  const districts = [
-    "Bagalkote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru",
-    "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya",
-    "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgiri"
-  ];
-
-  const categories = [
-    "Business", "Dance", "Education", "Health", "Food", "Arts", "Workshop", "Finance"
-  ];
+  const [preview, setPreview] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
-  const { name, value, files } = e.target;
+    const { name, value, files } = e.target;
 
-  if (name === 'image') {
-    setFormData((prev) => ({ ...prev, image: files[0] }));
-    return; // stop here so you don't overwrite it
-  }
-
-  if (name === 'contact') {
-    const digitsOnly = value.replace(/\D/g, '');
-    if (digitsOnly.length <= 10) {
-      setFormData((prev) => ({ ...prev, contact: digitsOnly }));
+    if (name === 'image') {
+      setFormData((prev) => ({ ...prev, image: files[0] }));
+      setPreview(files[0] ? URL.createObjectURL(files[0]) : null);
+      return;
     }
-    return;
-  }
 
-  setFormData((prev) => ({ ...prev, [name]: value }));
-};
+    if (name === 'contact') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 10) {
+        setFormData((prev) => ({ ...prev, contact: digitsOnly }));
+      }
+      return;
+    }
 
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const payload = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -52,7 +54,7 @@ const UploadAdvertisementForm = () => {
       });
       payload.append('postedAt', new Date().toISOString());
 
-      const token = localStorage.getItem('token'); // adjust if using different storage
+      const token = localStorage.getItem('token');
       await axios.post('http://localhost:5000/api/advertisements', payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -70,39 +72,105 @@ const UploadAdvertisementForm = () => {
         category: '',
         image: null,
       });
+      setPreview(null);
     } catch (error) {
       console.error('Ad upload failed:', error);
       alert('Failed to upload advertisement');
     }
+    setSubmitting(false);
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Add Advertisement</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange} className="input" required />
-        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="textarea" required />
-        <input type="url" name="redirectUrl" placeholder="Redirect URL" value={formData.redirectUrl} onChange={handleChange} className="input" required />
-        <input
-  type="text"
-  name="contact"
-  placeholder="Contact Info"
-  value={formData.contact}
-  onChange={handleChange}
-  className="input"
-  required
-  maxLength={10}
-/>
-        <input type="file" name="image" accept="image/*" onChange={handleChange} className="input" required />
-        <div className="md:flex gap-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+      <div className="w-full max-w-lg bg-white rounded-2xl px-7 py-10 shadow-2xl animate-fadeIn">
+        <h2 className="text-3xl font-extrabold mb-8 text-orange-700 tracking-tight text-center">Add Advertisement</h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block font-semibold mb-1 text-gray-700">Title <span className="text-orange-600">*</span></label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50"
+              placeholder="Advertisement Title"
+              required
+              disabled={submitting}
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-1 text-gray-700">Description <span className="text-orange-600">*</span></label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50 resize-y min-h-[80px]"
+              placeholder="Describe your ad"
+              required
+              disabled={submitting}
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-1 text-gray-700">Redirect URL <span className="text-orange-600">*</span></label>
+            <input
+              type="url"
+              name="redirectUrl"
+              placeholder="https://..."
+              value={formData.redirectUrl}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50"
+              required
+              disabled={submitting}
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-1 text-gray-700">Contact No. <span className="text-orange-600">*</span></label>
+            <input
+              type="text"
+              name="contact"
+              placeholder="10-digit phone number"
+              value={formData.contact}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50"
+              required
+              pattern="\d{10}"
+              maxLength={10}
+              disabled={submitting}
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-1 text-gray-700">Image <span className="text-orange-600">*</span></label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleChange}
+              className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 focus:outline-none"
+              required
+              disabled={submitting}
+            />
+            {preview && (
+              <img src={preview}
+                   alt="Preview"
+                   className="mt-2 mx-auto rounded-xl shadow border max-h-56 object-contain"
+              />
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <label className="block font-medium mb-1 text-gray-700">District</label>
+              <label className="block font-semibold mb-1 text-gray-700">District <span className="text-orange-600">*</span></label>
               <select
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
-                className="input w-full border px-3 py-2 rounded focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50"
                 required
+                disabled={submitting}
               >
                 <option value="">Select District</option>
                 {districts.map((d, i) => (
@@ -111,13 +179,14 @@ const UploadAdvertisementForm = () => {
               </select>
             </div>
             <div className="flex-1">
-              <label className="block font-medium mb-1 text-gray-700">Category</label>
+              <label className="block font-semibold mb-1 text-gray-700">Category <span className="text-orange-600">*</span></label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="input w-full border px-3 py-2 rounded focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-gray-800 text-base bg-gray-50"
                 required
+                disabled={submitting}
               >
                 <option value="">Select Category</option>
                 {categories.map((c, i) => (
@@ -126,13 +195,18 @@ const UploadAdvertisementForm = () => {
               </select>
             </div>
           </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Upload
-        </button>
-      </form>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className={`w-full mt-2 py-3 rounded-xl text-lg font-bold shadow-md transition bg-orange-600 hover:bg-orange-700 text-white focus:ring-2 focus:ring-orange-400 focus:outline-none ${
+              submitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {submitting ? "Uploading..." : "Upload Advertisement"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

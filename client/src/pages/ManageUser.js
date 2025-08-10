@@ -18,7 +18,6 @@ const ManageUsers = () => {
 
   const deleteUser = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
-
     try {
       await axios.delete(`http://localhost:5000/api/admin/users/${id}`);
       setUsers(users.filter(user => user._id !== id));
@@ -31,7 +30,7 @@ const ManageUsers = () => {
     try {
       await axios.put(`http://localhost:5000/api/admin/users/${id}/role`, { role });
       toast.success('User role updated successfully');
-      fetchUsers(); // refresh user list
+      fetchUsers();
     } catch (err) {
       console.error('Error updating user role:', err);
       toast.error('Failed to update user role');
@@ -43,38 +42,37 @@ const ManageUsers = () => {
   }, []);
 
   return (
-    <div className="ml-64 p-6">
-      <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto bg-white shadow rounded">
+    <div className="p-4 sm:p-8 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-7 text-orange-700 tracking-tight text-center sm:text-left">Manage Users</h1>
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
+        <table className="min-w-full divide-y divide-gray-200">
           <thead>
-            <tr className="bg-orange-100">
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Role</th>
-              <th className="p-3 text-left">Actions</th>
+            <tr className="bg-orange-50">
+              <th className="p-4 font-semibold text-left text-gray-700">Name</th>
+              <th className="p-4 font-semibold text-left text-gray-700">Email</th>
+              <th className="p-4 font-semibold text-left text-gray-700">Role</th>
+              <th className="p-4 font-semibold text-left text-gray-700">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
-              <tr key={user._id} className="border-t">
-                <td className="p-3">{user.name}</td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">
+            {users.map((user, idx) => (
+              <tr key={user._id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td className="p-4 text-gray-900 font-medium">{user.name}</td>
+                <td className="p-4 text-gray-700">{user.email}</td>
+                <td className="p-4">
                   <select
                     value={user.role}
                     onChange={(e) => updateUserRole(user._id, e.target.value)}
-                    className="border px-2 py-1 rounded"
+                    className="px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-orange-400 focus:border-orange-500 transition outline-none text-gray-800 bg-white font-semibold"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
-                    {/* <option value="editor">Editor</option> */}
                   </select>
                 </td>
-                <td className="p-3">
+                <td className="p-4">
                   <button
                     onClick={() => deleteUser(user._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all focus:outline-none focus:ring-2 focus:ring-red-300"
                   >
                     Delete
                   </button>
@@ -83,7 +81,7 @@ const ManageUsers = () => {
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan="4" className="p-4 text-center text-gray-500">
+                <td colSpan="4" className="p-6 text-center text-gray-400 font-medium">
                   No users found.
                 </td>
               </tr>
@@ -92,7 +90,6 @@ const ManageUsers = () => {
         </table>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
-
     </div>
   );
 };

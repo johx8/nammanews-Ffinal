@@ -32,47 +32,6 @@ exports.approveEvent = async (req, res) => {
 // POST /api/events/:id/register
 const mongoose = require('mongoose');
 
-// exports.registerForEvent = async (req, res) => {
-//   const { id } = req.params;
-//   const { name, email } = req.body;
-//   const userId = req.user.userId; // still string from JWT
-
-//   try {
-//     const event = await Event.findById(id);
-//     if (!event) {
-//       return res.status(404).json({ success: false, message: 'Event not found' });
-//     }
-
-//     const isFreeForAll = !event.maxAttendees;
-
-//     const isAlreadyRegistered = event.registeredUsers.some(
-//       user => String(user.userId) === String(userId)
-//     );
-//     if (isAlreadyRegistered) {
-//       return res.status(400).json({ success: false, message: 'You are already registered' });
-//     }
-
-//     if (!isFreeForAll && event.registeredUsers.length >= event.maxAttendees) {
-//       return res.status(400).json({ success: false, message: 'Event is full' });
-//     }
-
-//     // Push with ObjectId
-//     event.registeredUsers.push({
-//       userId: userId,
-//       name,
-//       email,
-//       registeredAt: new Date()
-//     });
-
-//     await event.save();
-
-//     res.json({ success: true, message: 'Registered successfully' });
-//   } catch (err) {
-//     console.error('Registration error:', err);
-//     res.status(500).json({ success: false, message: 'Registration failed', error: err.message,stack: err.stack });
-//   }
-// };
-
 
 // controllers/adminController.js
 exports.rejectEvent = async (req, res) => {
