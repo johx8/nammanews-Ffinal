@@ -36,6 +36,7 @@ import ApproveEvents from './pages/ApproveEvents.js';
 
 import UploadAdvertisementForm from './pages/UploadAdvertisementForm.js';
 import AdvertisementsAdmin from "./pages/ManageAdvertisements.js";
+import AdvertisementDetail from "./pages/AdvertisementDetails.js";  
 
 
 
@@ -68,6 +69,7 @@ function App() {
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/event/:id/register" element={<EventRegister />} />
         <Route path="/stories/:id" element={<StoryDetail />} />
+        <Route path="/advertisements/:id" element={<AdvertisementDetail />} />
         {/* User Routes */}
           <Route path="/user" element={<UserLayout />}>
             <Route path="profile" element={<Profile />} />

@@ -1,79 +1,122 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-
-const EventDetail = ({ onRegisterClick }) => {
+const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/events/events/${id}`)
-      .then(res => setEvent(res.data))
+    axios
+      .get(`http://localhost:5000/api/events/events/${id}`)
+      .then((res) => setEvent(res.data))
       .catch(() => setEvent(null));
   }, [id]);
 
-  if (!event) return <p>Loading...</p>;
+  if (!event) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-gray-500 text-lg">
+        Loading...
+      </div>
+    );
+  }
 
-  // Early destructure with fallback
   const {
     title,
     description,
     date,
     time,
-    organizedBy,
-    district,
     category,
+    district,
     address,
     imageUrl,
+    contact,
     maxAttendees,
-    registeredUsers = [],
+    registeredUsers = []
   } = event;
 
   const isFreeForAll = !maxAttendees;
   const isFull = !isFreeForAll && registeredUsers.length >= maxAttendees;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded">
-      {imageUrl && (
-        <img
-          src={imageUrl.startsWith('http') ? imageUrl : `http://localhost:5000${imageUrl}`}
-          alt={title}
-          className="w-full h-96 object-cover mb-4"
-        />
-      )}
-      <h1 className="text-3xl font-bold mb-2 leading-snug text-gray-800">{title}</h1>
-      <p className="text-md text-gray-600 mb-3 italic">
-        {district} | {category} | {date ? new Date(date).toLocaleDateString() : ''} {time}
-      </p>
-      <p className="text-gray-800 text-base mb-4">{description}</p>
-      <div className="flex flex-wrap gap-3 mb-4">
-        <span className="px-3 py-1 rounded bg-orange-50 text-orange-800 text-xs font-medium">
-          Organized by: {organizedBy}
-        </span>
-        <span className="px-3 py-1 rounded bg-gray-100 text-gray-700 text-xs font-medium">
-          Address: {address}
-        </span>
+    <div className="bg-gray-50 min-h-screen pt-16 px-4 flex justify-center">
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Left/Main Content (2/3 Width) */}
+        <div className="md:col-span-2 bg-white rounded-3xl shadow-lg p-8 flex flex-col">
+          {/* Event Image */}
+          <img
+            src={
+              imageUrl
+                ? (imageUrl.startsWith("http")
+                  ? imageUrl
+                  : `http://localhost:5000${imageUrl}`)
+                : "https://via.placeholder.com/800x400?text=No+Image"
+            }
+            alt={title}
+            className="w-full h-64 object-cover rounded-xl mb-6"
+          />
+
+          {/* Title */}
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">{title}</h1>
+
+          {/* Category */}
+          <span className="inline-block mb-4 px-3 py-1 text-sm rounded-full bg-orange-100 text-orange-700 font-semibold">
+            {category} | {district}
+          </span>
+
+          {/* Description */}
+          <div className="mb-6">
+            <h3 className="font-semibold mb-1">Description</h3>
+            <p className="text-gray-700">{description}</p>
+          </div>
+        </div>
+
+        {/* Sidebar (1/3 Width) */}
+        <div className="md:col-span-1 bg-white rounded-3xl shadow-lg p-8 flex flex-col justify-between h-fit min-h-[300px]">
+          {/* Date & Time */}
+          <div className="mb-5">
+            <div className="text-sm text-gray-500 mb-1">Date & Time</div>
+            <div className="text-lg font-bold text-gray-900">
+              {date ? new Date(date).toLocaleDateString() : "--"}
+              {time ? `, ${time}` : ""}
+            </div>
+          </div>
+
+          {/* Attendance Info */}
+          <div className="mb-5 text-sm text-gray-700">
+            {isFreeForAll
+              ? "✅ Free for All"
+              : isFull
+              ? "❌ Event Full"
+              : `✅ ${registeredUsers.length}/${maxAttendees} Attendees`}
+          </div>
+
+          {/* Registration Button */}
+          {!isFull && (
+            <button
+              onClick={() => navigate(`/event/${id}/register`)}
+              className="bg-orange-600 text-white px-6 py-2 rounded-lg shadow hover:bg-orange-700 font-semibold transition mb-4"
+            >
+              Register Now
+            </button>
+          )}
+
+          {/* Address */}
+          <div className="mb-3">
+            <div className="font-semibold text-gray-700 mb-1">📫 Address</div>
+            <div className="text-gray-600">{address}</div>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <div className="font-semibold text-gray-700 mb-1">📞 Contact</div>
+            <div className="text-gray-600">{contact}</div>
+          </div>
+
+          
+        </div>
       </div>
-      <div className="mb-5">
-        <span className="text-base">
-          {isFreeForAll
-            ? '✅ Free for All'
-            : isFull
-            ? '❌ Event Full'
-            : `✅ ${registeredUsers.length}/${maxAttendees} Attendees`}
-        </span>
-      </div>
-      {!isFull && (
-        <button
-          onClick={() => navigate(`/event/${id}/register`)}
-          className="bg-orange-600 text-white font-semibold px-6 py-2 rounded hover:bg-orange-700 transition-all"
-        >
-          Register
-        </button>
-      )}
     </div>
   );
 };

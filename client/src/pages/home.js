@@ -1,86 +1,128 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+// Home.js
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+
+const getDetailLink = (type, id) => {
+  switch (type) {
+    case "events": return `/event/${id}`;
+    case "advertisements": return `/advertisements/${id}`;
+    case "stories": return `/stories/${id}`;
+    default: return `/${type}/${id}`;
+  }
+};
+
+const ScrollSection = ({ title, items, type }) => {
+  return (
+    <div className="mb-10">
+      <h2 className="text-2xl font-bold mb-3 text-orange-700">{title}</h2>
+      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-orange-400">
+        {items.map((item) => (
+          <Link
+             to={getDetailLink(type, item._id)}
+             key={item._id}
+            className="min-w-[250px] bg-white rounded-lg shadow hover:shadow-lg transition-all duration-300 snap-start flex-shrink-0"
+          >
+            <img
+              src={
+                item.imageUrl
+                  ? item.imageUrl.startsWith("http")
+                    ? item.imageUrl
+                    : `http://localhost:5000${item.imageUrl}`
+                  : "https://via.placeholder.com/250x150?text=No+Image"
+              }
+              alt={item.title}
+              className="w-full h-36 object-cover rounded-t-lg"
+            />
+            <div className="p-3">
+              <h3 className="text-lg font-semibold text-gray-800 truncate">
+                {item.title}
+              </h3>
+              {type === "events" && (
+                <p className="text-xs text-gray-500">
+                  {item.district || "No district"} | {item.category}
+                </p>
+              )}
+              <p className="text-xs text-gray-400 mt-1">
+                {item.date
+                  ? new Date(item.date).toLocaleDateString()
+                  : item.createdAt
+                  ? new Date(item.createdAt).toLocaleDateString()
+                  : ""}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
 
 const Home = () => {
   const [events, setEvents] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch all events from your backend
-    const fetchEvents = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/events');
-        // Accepts {success, events} or directly events []
-        let data = [];
-        if (Array.isArray(res.data.events)) {
-          data = res.data.events;
-        } else if (Array.isArray(res.data)) {
-          data = res.data;
-        }
-        setEvents(data);
-        console.log("Fetched events:", data);
+        const [eventsRes, storiesRes, adsRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/events"),
+          axios.get("http://localhost:5000/api/stories"),
+          axios.get("http://localhost:5000/api/advertisements", {
+            withCredentials: true,
+          }),
+        ]);
+
+        setEvents(
+          Array.isArray(eventsRes.data.events)
+            ? eventsRes.data.events
+            : eventsRes.data
+        );
+        setStories(storiesRes.data);
+        setAds(
+          Array.isArray(adsRes.data)
+            ? adsRes.data
+            : adsRes.data.ads || []
+        );
       } catch (err) {
-        console.error('Error fetching events:', err);
-        setEvents([]);
+        console.error("Error fetching home data:", err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchEvents();
+    fetchAll();
   }, []);
 
-  return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-4 text-orange-700">Discover Local Events</h1>
-      <p className="mb-6 text-gray-600">Stay updated on what's happening around you.</p>
+  if (loading) {
+    return (
+      <div className="p-6 min-h-screen flex justify-center items-center text-gray-500">
+        Loading...
+      </div>
+    );
+  }
 
-      {loading ? (
-        <div className="text-center mt-6 text-gray-600">Loading events...</div>
-      ) : events.length === 0 ? (
-        <div className="mt-8 text-gray-500 text-lg">No events available yet.</div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {events.map((event) => (
-            <Link
-              to={`/event/${event._id}`}
-              key={event._id}
-              className="block"
-            >
-              <div className="bg-white rounded shadow hover:shadow-lg transition overflow-hidden h-80 flex flex-col">
-                <img
-                  src={
-                    event.imageUrl
-                      ? event.imageUrl.startsWith('http')
-                        ? event.imageUrl
-                        : `http://localhost:5000${event.imageUrl}`
-                      : 'https://via.placeholder.com/400x200?text=No+Image'
-                  }
-                  alt={event.title}
-                  className="w-full h-40 object-cover"
-                  style={{ background: "#ececec" }}
-                />
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold text-orange-600 truncate">
-                      {event.title}
-                    </h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {event.district || 'No district'} | {event.category}
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-2">
-                    {event.date
-                      ? new Date(event.date).toLocaleDateString()
-                      : ''}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-orange-700">
+        Discover What’s Happening in Karnataka
+      </h1>
+
+      <ScrollSection title="Latest Events" items={events} type="events" />
+      <ScrollSection title="Latest Stories" items={stories} type="stories" />
+      <ScrollSection
+        title="Advertisements"
+        items={ads.map((ad) => ({
+          ...ad,
+          title: ad.title || "Sponsored",
+          imageUrl: ad.imageUrl,
+          _id: ad._id,
+        }))}
+        type="advertisements"
+      />
     </div>
   );
 };

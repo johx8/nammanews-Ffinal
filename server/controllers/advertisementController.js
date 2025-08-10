@@ -62,3 +62,16 @@ exports.deleteAdvertisement = async (req, res) => {
     res.status(500).json({ message: "Server error deleting advertisement" });
   }
 };
+
+exports.getAdvertisementById = async (req, res) => {
+  try {
+    const ad = await Advertisement.findById(req.params.id);
+    if (!ad) {
+      return res.status(404).json({ message: 'Advertisement not found' });
+    }
+    res.status(200).json(ad);
+  } catch (error) {
+    console.error('Error fetching advertisement:', error);
+    res.status(500).json({ message: 'Failed to fetch advertisement' });
+  }
+};
